@@ -40,7 +40,7 @@ process DOWNLOAD_MZTAB {
 }
 process EXTRACT_MZTAB{
     label 'low_cpu'
-    publishDir params.out_dir
+    //publishDir params.out_dir
     input:
     path zip
 
