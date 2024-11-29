@@ -40,7 +40,6 @@ process DOWNLOAD_MZTAB {
 }
 process EXTRACT_MZTAB{
     label 'low_cpu'
-    //publishDir params.out_dir
     input:
     path zip
 
@@ -54,4 +53,20 @@ process EXTRACT_MZTAB{
     rm -rf extracted_files
     """
 }
-//get the post link unzip ${task_id}.zip
+
+process GET_PSM{
+    label 'low_cpu'
+    input:
+    path mztab
+
+    output:
+    path "psms.tsv"
+    path "ms_run_files.tsv"
+
+
+    script:
+    """
+    get_psm.py $mztab
+    """
+
+}

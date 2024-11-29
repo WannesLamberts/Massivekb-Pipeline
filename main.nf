@@ -5,27 +5,29 @@ log.info """\
     """
     .stripIndent(true)
 
-include { DOWNLOAD_METADATA     } from './modules.nf'
-include { EXTRACT_METADATA     } from './modules.nf'
-include { DOWNLOAD_MZTAB    } from './modules.nf'
-include { EXTRACT_MZTAB    } from './modules.nf'
+include { DOWNLOAD_METADATA } from './modules.nf'
+include { EXTRACT_METADATA } from './modules.nf'
+include { DOWNLOAD_MZTAB } from './modules.nf'
+include { EXTRACT_MZTAB } from './modules.nf'
+include { GET_PSM } from './modules.nf'
 
 
-/*workflow {
+
+workflow full{
     zip_data = DOWNLOAD_METADATA(params.dataset_link)
     data = EXTRACT_METADATA(zip_data)
     unique_ids = data.splitCsv(header: true, sep: '\t').map(row -> row.proteosafe_task).unique()
     zips_mztab = DOWNLOAD_MZTAB(unique_ids)
     mztab = EXTRACT_MZTAB(zips_mztab)
 
-}*/
+}
 
 workflow {
     unique_ids = Channel.fromPath("test_data.tsv").splitCsv(header: true, sep: '\t').map(row -> row.proteosafe_task).unique()
-    unique_ids.view()
-    //links = unique_ids.map{ id -> "https://proteomics2.ucsd.edu/ProteoSAFe/result.jsp?task=${id}&view=view_result_list"}
-    //links.view()
     zips_mztab = DOWNLOAD_MZTAB(unique_ids)
     mztab = EXTRACT_MZTAB(zips_mztab)
-    mztab.view()
+    GET_PSM(mztab)
+    GET_PSM.out[0].view()
+    GET_PSM.out[1].view()
+
 }
