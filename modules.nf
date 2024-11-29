@@ -22,20 +22,36 @@ process EXTRACT_METADATA{
 
     script:
     """
-    unzip candidate_library_spectra.zip
+    unzip $zip
     """
 }
 process DOWNLOAD_MZTAB {
     label 'low_cpu'
     input:
-    val link
+    val task_id
 
-    //output:
-    //path "*.mzTab"
+    output:
+    path "${task_id}.zip"
 
     script:
-    println(params.out_dir)
     """
-    download_mzTab.py "$link"
+    curl 'https://proteomics2.ucsd.edu/ProteoSAFe/DownloadResult?task=${task_id}&view=view_result_list' --data-raw 'option=delimit&content=all&download=&entries=&query=' -o ${task_id}.zip
     """
 }
+process EXTRACT_MZTAB{
+    label 'low_cpu'
+    publishDir params.out_dir
+    input:
+    path zip
+
+    output:
+    path "*.mzTab"
+
+    script:
+    """
+    unzip $zip -d extracted_files
+    mv extracted_files/mzTab/*.mzTab .
+    rm -rf extracted_files
+    """
+}
+//get the post link unzip ${task_id}.zip
