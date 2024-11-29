@@ -21,7 +21,7 @@ include { EXTRACT_MZTAB    } from './modules.nf'
 }*/
 
 workflow {
-    unique_ids = Channel.fromPath(tsvfiles).splitCsv(header: true, sep: '\t').map(row -> row.proteosafe_task).unique()
+    unique_ids = Channel.fromPath("test_data.tsv").splitCsv(header: true, sep: '\t').map(row -> row.proteosafe_task).unique()
     unique_ids.view()
     //links = unique_ids.map{ id -> "https://proteomics2.ucsd.edu/ProteoSAFe/result.jsp?task=${id}&view=view_result_list"}
     //links.view()
