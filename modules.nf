@@ -70,3 +70,25 @@ process GET_PSM{
     """
 
 }
+process DOWNLOAD_MZML_MZXML{
+    label 'low_cpu'
+    input:
+    val location
+
+    output:
+    tuple val(location),path('*')
+    script:
+    """
+    wget --retry-connrefused --passive-ftp --tries=50 $location
+    """
+}
+process COMPLETE_ROW{
+    label 'low_cpu'
+    input:
+    val row
+
+    script:
+    println("START MAKING ROWS")
+    """
+    """
+}

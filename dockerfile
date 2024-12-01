@@ -4,6 +4,7 @@ FROM python:3.12-slim
 # Update the package list and install required packages
 RUN apt-get update && apt-get install -y \
     curl \
+    wget \
     unzip \
     procps \
     && apt-get clean && rm -rf /var/lib/apt/lists/*

@@ -10,6 +10,8 @@ include { EXTRACT_METADATA } from './modules.nf'
 include { DOWNLOAD_MZTAB } from './modules.nf'
 include { EXTRACT_MZTAB } from './modules.nf'
 include { GET_PSM } from './modules.nf'
+include { DOWNLOAD_MZML_MZXML } from './modules.nf'
+include { COMPLETE_ROW } from './modules.nf'
 
 
 
@@ -27,7 +29,12 @@ workflow {
     zips_mztab = DOWNLOAD_MZTAB(unique_ids)
     mztab = EXTRACT_MZTAB(zips_mztab)
     GET_PSM(mztab)
-    GET_PSM.out[0].view()
-    GET_PSM.out[1].view()
+    massive_paths = GET_PSM.out[1].splitText()
+    massive_paths = massive_paths.map { path -> path.replace('\n', '') }
+    outp = DOWNLOAD_MZML_MZXML(massive_paths)
+    psms = GET_PSM.out[0]
+    psm_rows = psms.splitCsv(sep: '\t')
+    psm_rows_joined = psm_rows.join(outp,failOnMismatch: true)
+    //COMPLETE_ROW(psm_rows_joined)
 
 }

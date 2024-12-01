@@ -22,9 +22,12 @@ def main():
     ms_run_to_file = {f"ms_run[{key}]": value.get('location') for key, value in mz.ms_runs .items()}
 
     data["ms_run"] = data["ms_run"].apply(lambda x: replace_ms_run(x, ms_run_to_file))
-    data.to_csv('psms.tsv', sep='\t', index=False)
+    data["ms_run"] = data["ms_run"].str.replace('file://', 'ftp://massive.ucsd.edu/z01/')
+    data = data[["ms_run","scan","sequence"]]
+    data.to_csv('psms.tsv', sep='\t', index=False, header=False)
 
     ms_run_files = pd.Series(ms_run_to_file)
+    ms_run_files=ms_run_files.str.replace('file://', 'ftp://massive.ucsd.edu/z01/')
     ms_run_files.to_csv('ms_run_files.tsv', sep='\t', index=False, header=False)
 main()
 
