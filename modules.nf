@@ -73,6 +73,21 @@ process GET_PSM{
 process DOWNLOAD_MZML_MZXML{
     label 'low_cpu'
     input:
+    path mztab
+
+    output:
+    tuple(path("output.tsv"))
+    script:
+    """
+    get_psm.py $mztab
+    wget --retry-connrefused --passive-ftp --tries=50 -i ms_run_files.tsv
+    parse.py
+
+    """
+}
+process parse_MZML{
+    label 'low_cpu'
+    input:
     val location
 
     output:
@@ -81,6 +96,7 @@ process DOWNLOAD_MZML_MZXML{
     """
     wget --retry-connrefused --passive-ftp --tries=50 $location
     """
+
 }
 process COMPLETE_ROW{
     label 'low_cpu'

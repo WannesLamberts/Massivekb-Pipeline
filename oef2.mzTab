@@ -15,6 +15,8 @@ MTD	variable_mod[6]	[UNIMOD, UNIMOD:21, Phospho, ]
 MTD	variable_mod[7]	[UNIMOD, UNIMOD:28, Gln->pyro-Glu, ]
 MTD	variable_mod[8]	[MS, MS:1001460, unknown modification, #]
 MTD	ms_run[1]-location	file://MSV000080757/ccms_peak/RAW/20110823_EXQ3_TaGe_SA_BC8_3.mzML
+MTD	ms_run[2]-location	file://MSV000080757/ccms_peak/RAW/20110616_EXQ1_TaGe_SA_BC26_1.mzML
+MTD	ms_run[3]-location	file://MSV000080757/ccms_peak/RAW/20110612_EXQ1_TaGe_SA_BC6_1.mzML
 
 PRH	accession	description	taxid	species	database	database_version	search_engine	ambiguity_members	modifications	protein_coverage
 PRT	sp|Q8IYD1|ERF3B_HUMAN	null	null	null	null	null	null	null	null	null

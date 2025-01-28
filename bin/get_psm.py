@@ -9,8 +9,10 @@ def replace_ms_run(s, mapping):
         if ms_run in s:
             return s.replace(ms_run, replacement)
     return s
+
+
 def main():
-    file_path = sys.argv[1]
+    file_path = "oef.mzTab"
     mz = MzTab(file_path)
 
     two_columns = mz.spectrum_match_table[['spectra_ref', 'sequence']]
@@ -24,10 +26,12 @@ def main():
     data["ms_run"] = data["ms_run"].apply(lambda x: replace_ms_run(x, ms_run_to_file))
     data["ms_run"] = data["ms_run"].str.replace('file://', 'ftp://massive.ucsd.edu/z01/')
     data = data[["ms_run","scan","sequence"]]
-    data.to_csv('psms.tsv', sep='\t', index=False, header=False)
+    data.to_csv('psms.tsv', sep='\t', index=False, header=True)
 
     ms_run_files = pd.Series(ms_run_to_file)
     ms_run_files=ms_run_files.str.replace('file://', 'ftp://massive.ucsd.edu/z01/')
+
     ms_run_files.to_csv('ms_run_files.tsv', sep='\t', index=False, header=False)
+
 main()
 
