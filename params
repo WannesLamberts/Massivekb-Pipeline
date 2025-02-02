@@ -1,4 +1,6 @@
 params {
     dataset_link = "https://massive.ucsd.edu/ProteoSAFe/DownloadResult?view=candidate_library_spectra&task=82c0124b6053407fa41ba98f53fd8d89"
     out_dir = "results"
+    testing = "false"
+    work_dir = "scratch"
 }

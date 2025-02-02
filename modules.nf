@@ -31,7 +31,7 @@ process DOWNLOAD_MZTAB {
     val task_id
 
     output:
-    path "${task_id}.zip"
+    tuple val(task_id),path("${task_id}.zip")
 
     script:
     """
@@ -40,71 +40,87 @@ process DOWNLOAD_MZTAB {
 }
 process EXTRACT_MZTAB{
     label 'low_cpu'
+
     input:
-    path zip
+    tuple val(task_id),path(zip)
 
     output:
-    path "*.mzTab"
+    tuple val(task_id),path("*.mzTab")
 
     script:
     """
     unzip $zip -d extracted_files
-    mv extracted_files/mzTab/*.mzTab .
-    rm -rf extracted_files
+    find extracted_files/ -type f -name "*.mzTab" -exec mv {} . \\;
+
+    # Conditionally delete if params.testing is true
+    if [ ${params.testing} = false ]; then
+        rm "\$(readlink -f $zip)" $zip
+        rm -r extracted_files
+    fi
     """
 }
 
-process GET_PSM{
-    label 'low_cpu'
-    input:
-    path mztab
-
-    output:
-    path "psms.tsv"
-    path "ms_run_files.tsv"
 
 
-    script:
-    """
-    get_psm.py $mztab
-    """
-
-}
 process DOWNLOAD_MZML_MZXML{
     label 'low_cpu'
+    publishDir './results', mode: 'move', flatten: true,include: '*_psms.tsv'
+
     input:
-    path mztab
+    tuple val(task_id),path(mztab)
 
     output:
-    tuple(path("output.tsv"))
+    val task_id
+    path "*_psms.tsv"
     script:
     """
     get_psm.py $mztab
     wget --retry-connrefused --passive-ftp --tries=50 -i ms_run_files.tsv
-    parse.py
-
+    parse.py psms.tsv ${task_id}_psms.tsv
+    if [ ${params.testing} = false ]; then
+        rm "\$(readlink -f $mztab)" $mztab
+        rm -rf ms_run_files.tsv *.mzXML *.mzML psms.tsv
+    fi
     """
 }
-process parse_MZML{
+
+process CONCATENATE{
     label 'low_cpu'
+    publishDir './results', mode: 'copy', flatten: true,include: 'combined.tsv'
     input:
-    val location
+    path files
+    output:
+    path "combined.tsv"
+    script:
+    """
+    first=true
+    for file in *_psms.tsv; do
+    if [ "\$first" = true ]; then
+        first=false
+        echo "columns"
+    else
+        echo ""  # Adds a newline before every file except the first one
+    fi
+    cat "\$file"
+    done > combined.tsv
+    """
+}
+
+process TO_FILE{
+    label 'low_cpu'
+    publishDir params.out_dir, mode: 'move', flatten: true,include: 'succesfull_tasks.tsv'
+
+    input:
+    val idList
 
     output:
-    tuple val(location),path('*')
-    script:
-    """
-    wget --retry-connrefused --passive-ftp --tries=50 $location
-    """
-
-}
-process COMPLETE_ROW{
-    label 'low_cpu'
-    input:
-    val row
+    file "succesfull_tasks"
 
     script:
-    println("START MAKING ROWS")
     """
+    # Here we are appending each ID to the tsv file
+    echo -e "${idList.join('\n')}" > succesfull_tasks
     """
 }
+
+

@@ -5,33 +5,40 @@ import pandas as pd
 from pyteomics.mzml import MzML
 import re
 
+from pyteomics.mzxml import MzXML
+
 
 def main():
-    # List mzML files in the current directory
+    #Get all mzML files in current directory
     mzMLfiles = [f for f in os.listdir() if f.endswith(".mzML")]
-
-    # Prepare a list to hold the data
+    mzXMLfiles = [f for f in os.listdir() if f.endswith(".mzXML")]
     data = []
 
-    # Iterate through the mzML files and extract information
+    #for every mzML file parse required information for psm
     for f in mzMLfiles:
         mz = MzML(f)
         for spec in mz:
             ret = spec["scanList"]["scan"][0]["scan start time"]
             scan_nr = str(re.search(r'scan=(\d+)', spec["id"]).group(1))
-            data.append({'ms_run': f, 'scan': scan_nr, 'RT': ret})
+            data.append({'filename': f, 'scan': scan_nr, 'RT': ret})
 
-    # Convert the list of dictionaries into a pandas DataFrame
+    for f in mzXMLfiles:
+        mzXML = MzXML(f)
+        for spec in mzXML:
+            scan_nr=spec["num"]
+            ret = spec["retentionTime"]
+            data.append({'filename': f, 'scan': scan_nr, 'RT': ret})
+    #Convert required information to a pandas dataframe
     df = pd.DataFrame(data)
-    file_path = "psms.tsv"
-    df2 = pd.read_csv(file_path, sep='\t')
-    df2['scan'] = df2['scan'].astype(str)
+    #Read the uncompleted psms into a dataframe
+    file_path = sys.argv[1]
+    df_psms= pd.read_csv(file_path, sep='\t')
+    df_psms['scan'] = df_psms['scan'].astype(str)
 
-
-    df2['ms_run'] = df2['ms_run'].str.split('/').str[-1]
-    result = pd.merge(df, df2, how='right', on=['ms_run','scan'])
-    print(result)
-
+    #Right join the two dataframes on filename and scan to get the completed psms
+    result = pd.merge(df, df_psms, how='right', on=['filename','scan'])
+    output_filename = sys.argv[2]
+    result.to_csv(output_filename, sep='\t', index=False, header=True)
 
 main()
 
