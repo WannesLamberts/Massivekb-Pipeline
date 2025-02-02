@@ -13,7 +13,7 @@ process GET_TASKS {
     unzip candidate_library_spectra.zip
     get_tasks.py LIBRARY_CREATION_AUGMENT_LIBRARY_TEST-82c0124b-candidate_library_spectra-main.tsv tasks.tsv
     if [ ${params.testing} = false ]; then
-        rm -r LIBRARY_CREATION_AUGMENT_LIBRARY_TEST-82c0124b-candidate_library_spectra-main.tsv candidate_library_spectra.zip
+        rm -rf LIBRARY_CREATION_AUGMENT_LIBRARY_TEST-82c0124b-candidate_library_spectra-main.tsv candidate_library_spectra.zip
     fi
     """
 }
