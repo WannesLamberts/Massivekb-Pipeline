@@ -29,12 +29,6 @@ workflow base{
     completed_tasks = completed_task_ids.collect()
     TO_FILE(completed_tasks)
 }
-workflow alternative{
-    //GET_TASKS(params.dataset_link)
-    tasks = Channel.fromPath("output_small.tsv").splitCsv(header: false, sep: '\t').map(row -> row[0])
-    CREATE_PSMS(tasks)
-    COLLECT_SUCCESFULL_TASKS(CREATE_PSMS.out[0].collect())
-}
 
 workflow alternative{
     //GET_TASKS(params.dataset_link)
@@ -42,7 +36,7 @@ workflow alternative{
     CREATE_PSMS(tasks)
     COLLECT_SUCCESFULL_TASKS(CREATE_PSMS.out[0].collect())
 }
-workflow{
+workflow {
     tasks = Channel.fromPath("test_files/small_tasks.tsv").splitCsv(header: false, sep: '\t').map(row -> row[0])
     CREATE_PSMS(tasks)
     COLLECT_SUCCESFULL_TASKS(CREATE_PSMS.out[0].collect())
