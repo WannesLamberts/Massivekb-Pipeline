@@ -11,7 +11,6 @@ process GET_TASKS {
     """
     curl -X POST "$link" -o candidate_library_spectra.zip
     unzip candidate_library_spectra.zip
-    chmod +x get_tasks.py
 
     get_tasks.py LIBRARY_CREATION_AUGMENT_LIBRARY_TEST-82c0124b-candidate_library_spectra-main.tsv tasks.tsv
     if [ ${params.testing} = false ]; then
@@ -34,12 +33,9 @@ process CREATE_PSMS{
     """
     curl 'https://proteomics2.ucsd.edu/ProteoSAFe/DownloadResult?task=${task_id}&view=view_result_list' --data-raw 'option=delimit&content=all&download=&entries=&query=' -o mzTab.zip
     unzip mzTab.zip -d extracted_files
-    ls
-    chmod +x get_psm.py
     find extracted_files/ -type f -name "*.mzTab" -exec get_psm.py {} \\;
 
     wget --retry-connrefused --passive-ftp --tries=50 -i ms_run_files.tsv
-    chmod +x parse.py
 
     parse.py psms.tsv ${task_id}_psms.tsv
 
