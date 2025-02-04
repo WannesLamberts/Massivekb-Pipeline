@@ -36,12 +36,17 @@ workflow alternative{
     CREATE_PSMS(tasks)
     COLLECT_SUCCESFULL_TASKS(CREATE_PSMS.out[0].collect())
 }
+workflow one{
+    tasks = Channel.fromPath("test_files/one_tasks.tsv").splitCsv(header: false, sep: '\t').map(row -> row[0])
+    CREATE_PSMS(tasks)
+    COLLECT_SUCCESFULL_TASKS(CREATE_PSMS.out[0].collect())
+}
 workflow small{
     tasks = Channel.fromPath("test_files/small_tasks.tsv").splitCsv(header: false, sep: '\t').map(row -> row[0])
     CREATE_PSMS(tasks)
     COLLECT_SUCCESFULL_TASKS(CREATE_PSMS.out[0].collect())
 }
-workflow{
+workflow supercomp{
     tasks_file = GET_TASKS(params.dataset_link)
     tasks = tasks_file.splitCsv(header: false, sep: '\t').map(row -> row[0])
     CREATE_PSMS(tasks)

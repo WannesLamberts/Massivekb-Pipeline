@@ -1,7 +1,7 @@
 import csv
 def split_dataset():
 
-    input_file = "../massivekb_dataset/LIBRARY_CREATION_AUGMENT_LIBRARY_TEST-82c0124b-candidate_library_spectra-main.tsv"
+    #input_file = "../massivekb_dataset/LIBRARY_CREATION_AUGMENT_LIBRARY_TEST-82c0124b-candidate_library_spectra-main.tsv"
     output_file = "text.tsv"
 
     with open(input_file, 'r', encoding='utf-8') as infile:
