@@ -3,4 +3,7 @@ params {
     out_dir = "results"
     testing = "false"
     work_dir = "scratch"
+    max_memory = 10.GB
+    max_cpus = 1
+    max_time = 0.h
 }
