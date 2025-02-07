@@ -31,7 +31,13 @@ def main():
     with open(ms_run_files, "r") as file:
         for line in file:
             url = line.strip()
-            subprocess.run(["curl","-O",url], check=True)
+            subprocess.run([
+                "wget",
+                "--retry-connrefused",
+                "--passive-ftp",
+                "--tries=10",
+                url
+            ], check=True)
             filename = os.path.basename(url)
             if filename.endswith(".mzML"):
                 parse_mzML(filename,data)
