@@ -9,10 +9,14 @@ module purge
 module load calcua/2024a
 module load Nextflow/23.04.2
 
+chmod +x bin/get_psm.py
+chmod +x bin/get_tasks.py
+chmod +x bin/parse.py
+
 nextflow run main.nf \
     -entry run_tasks \
     -c config_files/supercomputer.config \
-    --input_tasks input_files/to.tsv \
+    --input_tasks input_files/one_tasks.tsv \
     --out_dir ${VSC_DATA}/results \
     --work_dir ${VSC_SCRATCH}/work \
     --clusterOptions "-t 20:00:00 -c 1"

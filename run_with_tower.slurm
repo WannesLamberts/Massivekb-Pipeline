@@ -9,6 +9,10 @@ module purge
 module load calcua/2024a
 module load Nextflow/23.04.2
 
+chmod +x bin/get_psm.py
+chmod +x bin/get_tasks.py
+chmod +x bin/parse.py
+
 export TOWER_ACCESS_TOKEN=0
 export TOWER_WORKSPACE_ID=0
 
