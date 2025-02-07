@@ -13,13 +13,13 @@ chmod +x bin/get_psm.py
 chmod +x bin/get_tasks.py
 chmod +x bin/parse.py
 
-export TOWER_ACCESS_TOKEN=0
-export TOWER_WORKSPACE_ID=0
+export TOWER_ACCESS_TOKEN=eyJ0aWQiOiAxMDgxOX0uMGVkMzY4YWVjYzk4OGViNGY3MzQ2MmQ4YjIxMjMxNDM2MDgzNjY2Ng==
+export TOWER_WORKSPACE_ID=248391247643063
 
 nextflow run main.nf \
     -entry run_tasks \
     -c config_files/supercomputer.config \
-    --input_tasks input_files/to.tsv \
+    --input_tasks input_files/medium_tasks.tsv \
     --out_dir ${VSC_DATA}/results \
     --work_dir ${VSC_SCRATCH}/work \
     --clusterOptions "-t 20:00:00 -c 1" \
