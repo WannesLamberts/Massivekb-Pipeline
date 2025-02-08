@@ -41,7 +41,7 @@ process GET_TASKS_FROM_FILE {
 
 process CREATE_PSMS{
     label 'low_cpu'
-    publishDir params.out_dir, mode: 'move', flatten: true,include: '*_psms.tsv'
+    publishDir "${params.out_dir}/psms", mode: 'move', flatten: true,include: '*_psms.tsv'
 
     input:
     val(task_id)
