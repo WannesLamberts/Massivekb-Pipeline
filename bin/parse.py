@@ -32,7 +32,7 @@ def main():
         for line in file:
             url = line.strip()
             try:
-                subprocess.run(['wget', '--retry-connrefused', '--passive-ftp', '--tries=1', url+"fefe"],check=True)
+                subprocess.run(['wget', '--retry-connrefused', '--passive-ftp', '--tries=1', url],check=True)
             except Exception as e:
                 sys.exit(58)
             filename = os.path.basename(url)
