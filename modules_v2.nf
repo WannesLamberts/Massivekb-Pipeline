@@ -63,19 +63,22 @@ process CREATE_PSMS{
     """
 }
 
-process COLLECT_SUCCESFULL_TASKS{
+process COLLECT_SUCCESSFUL_FAILED_TASKS {
     label 'low_cpu'
-    publishDir params.out_dir, mode: 'move', flatten: true,include: 'succesfull_tasks.tsv'
+    publishDir params.out_dir, mode: 'move', flatten: true, include: '*.tsv'
 
     input:
-    val idList
+    val idList_all
+    val idList_successful
 
     output:
-    file "succesfull_tasks.tsv"
-
+    path "successful_tasks.tsv"
+    path "failed_tasks.tsv"
     script:
+    println(idList_all)
     """
-    echo -e "${idList.join('\n')}" > succesfull_tasks.tsv
+    echo -e "${idList_successful.join('\n')}" > successful_tasks.tsv
+    failed_tasks.py '${idList_all}' '${idList_successful}' failed_tasks.tsv
     """
 }
 
