@@ -12,6 +12,7 @@ module load Nextflow/23.04.2
 chmod +x bin/get_psm.py
 chmod +x bin/get_tasks.py
 chmod +x bin/parse.py
+chmod +x bin/failed_tasks.py
 
 nextflow run main.nf \
     -entry run_tasks \
@@ -19,4 +20,5 @@ nextflow run main.nf \
     --input_tasks input_files/medium_tasks.tsv \
     --out_dir ${VSC_DATA}/results \
     --work_dir ${VSC_SCRATCH}/work \
+    --max_processes 20 \
     --clusterOptions "-t 20:00:00 -c 1"
