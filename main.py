@@ -1,7 +1,9 @@
 import csv
+import random
+
 def split_dataset():
 
-    #input_file = "../massivekb_dataset/LIBRARY_CREATION_AUGMENT_LIBRARY_TEST-82c0124b-candidate_library_spectra-main.tsv"
+    input_file = "../massivekb_dataset/LIBRARY_CREATION_AUGMENT_LIBRARY_TEST-82c0124b-candidate_library_spectra-main.tsv"
     output_file = "text.tsv"
 
     with open(input_file, 'r', encoding='utf-8') as infile:
@@ -36,5 +38,20 @@ def amount_tasks():
         print(f"Column '{column_name}' not found. Available columns: {df.columns}")
 
 
-# Call the function
-amount_tasks()
+def get_random_tasks(file, amount, out_file):
+    # Read tasks from the input file
+    with open(file, 'r') as f:
+        tasks = f.readlines()
+
+    # Ensure amount does not exceed available tasks
+    amount = min(amount, len(tasks))
+
+    # Select random tasks
+    random_tasks = random.sample(tasks, amount)
+
+    # Write selected tasks to the output file
+    with open(out_file, 'w') as f:
+        f.writelines(random_tasks)
+
+get_random_tasks('input_files/all_tasks.tsv', 100, 'input_files/random_tasks.tsv')
+

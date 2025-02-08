@@ -1,0 +1,5 @@
+
+##DOCKER##
+
+#GET_TASKS_FROM_FILE
+nextflow run main.nf -c config_files/docker.config -entry get_tasks_from_file --input input_file ../massivekb_dataset/LIBRARY_CREATION_AUGMENT_LIBRARY_TEST-82c0124b-candidate_library_spectra-main.tsv

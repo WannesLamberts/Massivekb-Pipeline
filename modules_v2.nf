@@ -1,5 +1,5 @@
 
-process GET_TASKS {
+process DOWNLOAD_GET_TASKS {
     label 'low_cpu'
     input:
     val link
@@ -18,6 +18,27 @@ process GET_TASKS {
     fi
     """
 }
+
+process GET_TASKS_FROM_FILE {
+    publishDir params.out_dir, mode: 'move', flatten: true,include: 'tasks.tsv'
+
+    label 'low_cpu'
+    input:
+    path file
+
+    output:
+    path "tasks.tsv"
+
+    script:
+    println(file)
+    """
+    get_tasks.py $file tasks.tsv
+    if [ ${params.testing} = false ]; then
+        rm -rf LIBRARY_CREATION_AUGMENT_LIBRARY_TEST-82c0124b-candidate_library_spectra-main.tsv candidate_library_spectra.zip
+    fi
+    """
+}
+
 process CREATE_PSMS{
     label 'low_cpu'
     publishDir params.out_dir, mode: 'move', flatten: true,include: '*_psms.tsv'
