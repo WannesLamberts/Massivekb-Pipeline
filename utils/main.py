@@ -3,7 +3,7 @@ import random
 
 def split_dataset():
 
-    input_file = "../massivekb_dataset/LIBRARY_CREATION_AUGMENT_LIBRARY_TEST-82c0124b-candidate_library_spectra-main.tsv"
+    input_file = "../../massivekb_dataset/LIBRARY_CREATION_AUGMENT_LIBRARY_TEST-82c0124b-candidate_library_spectra-main.tsv"
     output_file = "text.tsv"
 
     with open(input_file, 'r', encoding='utf-8') as infile:
@@ -24,7 +24,7 @@ import pandas as pd
 
 
 def amount_tasks():
-    input_file = "../massivekb_dataset/LIBRARY_CREATION_AUGMENT_LIBRARY_TEST-82c0124b-candidate_library_spectra-main.tsv"
+    input_file = "../../massivekb_dataset/LIBRARY_CREATION_AUGMENT_LIBRARY_TEST-82c0124b-candidate_library_spectra-main.tsv"
 
     # Read the TSV file
     df = pd.read_csv(input_file, sep='\t')
@@ -53,5 +53,5 @@ def get_random_tasks(file, amount, out_file):
     with open(out_file, 'w') as f:
         f.writelines(random_tasks)
 
-get_random_tasks('input_files/all_tasks.tsv', 100, 'input_files/random_tasks.tsv')
+get_random_tasks('../input_files/all_tasks.tsv', 100, 'input_files/random_tasks.tsv')
 
