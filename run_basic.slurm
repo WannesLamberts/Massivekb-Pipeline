@@ -17,8 +17,8 @@ chmod +x bin/failed_tasks.py
 nextflow run main.nf \
     -entry run_tasks \
     -c config_files/supercomputer.config \
-    --input_tasks input_files/medium_tasks.tsv \
+    --input_tasks input_files/first_100.tsv \
     --out_dir ${VSC_DATA}/results \
     --work_dir ${VSC_SCRATCH}/work \
-    --max_processes 10 \
+    --max_processes 15 \
     --clusterOptions "-t 20:00:00 -c 1"
