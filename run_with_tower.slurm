@@ -24,5 +24,5 @@ nextflow run main.nf \
     --out_dir ${VSC_DATA}/results \
     --work_dir ${VSC_SCRATCH}/work \
     --clusterOptions "-t 20:00:00 -c 1" \
-    --max_processes 18 \
+    --max_processes 10 \
     -with-tower
