@@ -38,6 +38,28 @@ process GET_TASKS_FROM_FILE {
     fi
     """
 }
+process CHECK_MZTAB{
+    label 'low_cpu'
+
+    input:
+    val(task_id)
+
+    output:
+    val task_id
+    script:
+    """
+    curl 'https://proteomics2.ucsd.edu/ProteoSAFe/DownloadResult?task=${task_id}&view=view_result_list' --data-raw 'option=delimit&content=all&download=&entries=&query=' -o mzTab.zip
+    unzip mzTab.zip -d extracted_files
+
+    if ! find extracted_files -type f -name "*.mzTab" | grep -q .; then
+        exit 186
+    fi
+    if [ ${params.testing} = false ]; then
+        rm -rf extracted_files *.mzTab mzTab.zip
+    fi
+    """
+}
+
 
 process CREATE_PSMS{
     label 'low_cpu'
@@ -55,6 +77,9 @@ process CREATE_PSMS{
     curl 'https://proteomics2.ucsd.edu/ProteoSAFe/DownloadResult?task=${task_id}&view=view_result_list' --data-raw 'option=delimit&content=all&download=&entries=&query=' -o mzTab.zip
     unzip mzTab.zip -d extracted_files
     find extracted_files/ -type f -name "*.mzTab" -exec get_psm.py {} \\;
+    if ! find extracted_files -type f -name "*.mzTab" | grep -q .; then
+        exit 186
+    fi
     parse.py psms.tsv ms_run_files.tsv ${task_id}_psms.tsv
 
     if [ ${params.testing} = false ]; then

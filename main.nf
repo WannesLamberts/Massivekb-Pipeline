@@ -17,8 +17,17 @@ include { DOWNLOAD_GET_TASKS } from './modules_v2.nf'
 include { CREATE_PSMS } from './modules_v2.nf'
 include { COLLECT_SUCCESSFUL_FAILED_TASKS } from './modules_v2.nf'
 include { GET_TASKS_FROM_FILE } from './modules_v2.nf'
+include { CHECK_MZTAB } from './modules_v2.nf'
 
+workflow check_valid_mztabs{
+    tasks = Channel.fromPath(params.input_tasks).splitCsv(header: false, sep: '\t').map(row -> row[0])
+    all_tasks = Channel.fromPath(params.input_tasks).splitCsv(header: false, sep: '\t').map(row -> row[0])
+    CHECK_MZTAB(tasks)
+    valid = CHECK_MZTAB.out[0].collect()
+    valid.view()
+    //COLLECT_SUCCESSFUL_FAILED_TASKS(all_tasks.collect(),CREATE_PSMS.out[0].collect())
 
+}
 
 workflow run_tasks{
     tasks = Channel.fromPath(params.input_tasks).splitCsv(header: false, sep: '\t').map(row -> row[0])
