@@ -51,7 +51,7 @@ def main():
     #Right join the two dataframes on filename and scan to get the completed psms
     result = pd.merge(df, df_psms, how='right', on=['filename','scan'])
     output_filename = sys.argv[3]
-    result.to_csv(output_filename, sep='\t', index=False, header=True)
+    result.to_csv(output_filename, sep='\t', index=False, header=False)
 
 
 main()

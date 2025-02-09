@@ -33,7 +33,7 @@ def main():
     #map ms_run to download location on server
     df["filename"] = df["ms_run"].apply(lambda x: replace_ms_run(x, ms_run_to_file))
     #output peptide matches to tsv file
-    df[['sequence','scan','filename']].to_csv('psms.tsv', sep='\t', index=False, header=False)
+    df[['sequence','scan','filename']].to_csv('psms.tsv', sep='\t', index=False, header=True)
     #output ms run files needed for peptides matches
     ms_run_files = pd.Series(ms_run_to_file)
     ms_run_files=ms_run_files.str.replace('file://', 'ftp://massive.ucsd.edu/z01/')
