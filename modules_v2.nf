@@ -80,6 +80,11 @@ process CREATE_PSMS{
     if ! find extracted_files -type f -name "*.mzTab" | grep -q .; then
         exit 186
     fi
+
+    if ! find . -type f -name "ms_run_files.tsv" | grep -q .; then
+    exit 51
+    fi
+
     parse.py psms.tsv ms_run_files.tsv ${task_id}_psms.tsv
 
     if [ ${params.testing} = false ]; then
@@ -88,22 +93,18 @@ process CREATE_PSMS{
     """
 }
 
-process COLLECT_SUCCESSFUL_FAILED_TASKS {
+process COLLECT_SUCCESSFUL_TASKS {
     label 'low_cpu'
     publishDir params.out_dir, mode: 'move', flatten: true, include: '*.tsv'
 
     input:
-    val idList_all
     val idList_successful
 
     output:
     path "successful_tasks.tsv"
-    path "failed_tasks.tsv"
     script:
-    println(idList_all)
     """
     echo -e "${idList_successful.join('\n')}" > successful_tasks.tsv
-    failed_tasks.py '${idList_all}' '${idList_successful}' failed_tasks.tsv
     """
 }
 

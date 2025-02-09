@@ -2,8 +2,8 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH -A ap_adrem_wb_thesis2425
-#SBATCH --time=20:00:00
-#SBATCH --partition=zen2
+#SBATCH --time=160:00:00
+#SBATCH --partition=skylake
 
 module purge
 module load calcua/2024a
@@ -17,8 +17,8 @@ chmod +x bin/failed_tasks.py
 nextflow run main.nf \
     -entry run_tasks \
     -c config_files/supercomputer.config \
-    --input_tasks input_files/first_100.tsv \
+    --input_tasks input_files/first_1000.tsv \
     --out_dir ${VSC_DATA}/results \
     --work_dir ${VSC_SCRATCH}/work \
     --max_processes 10 \
-    --clusterOptions "-t 20:00:00 -c 1"
+    --clusterOptions "-t 24:00:00 -c 1"
