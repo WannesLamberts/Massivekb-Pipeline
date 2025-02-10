@@ -19,7 +19,7 @@ mkdir ${VSC_DATA}/results
 nextflow run main.nf \
     -entry run_tasks \
     -c config_files/supercomputer.config \
-    --input_tasks input_files/first_1000.tsv \
+    --input_tasks input_files/first_100.tsv \
     --out_dir ${VSC_DATA}/results \
     --work_dir ${VSC_SCRATCH}/work \
     --max_processes 10 \
