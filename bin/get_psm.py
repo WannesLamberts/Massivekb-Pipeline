@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 
 from pyteomics.mztab import MzTab
 import sys
@@ -15,6 +16,7 @@ def replace_ms_run(s, mapping):
 
 def main():
     file_path = sys.argv[1]
+    mz_tab_name = os.path.basename(file_path)
 
     #Parse mzTab file
     mz = MzTab(file_path)
@@ -32,8 +34,10 @@ def main():
 
     #map ms_run to download location on server
     df["filename"] = df["ms_run"].apply(lambda x: replace_ms_run(x, ms_run_to_file))
+    df["mztab"] = mz_tab_name
+    df["task_id"] = sys.argv[2]
     #output peptide matches to tsv file
-    df[['sequence','scan','filename']].to_csv('psms.tsv', sep='\t', index=False, header=True)
+    df[['sequence','scan','filename','mztab','task_id']].to_csv('psms.tsv', sep='\t', index=False, header=True)
     #output ms run files needed for peptides matches
     ms_run_files = pd.Series(ms_run_to_file)
     ms_run_files=ms_run_files.str.replace('file://', 'ftp://massive.ucsd.edu/z01/')

@@ -76,7 +76,7 @@ process CREATE_PSMS{
     """
     curl 'https://proteomics2.ucsd.edu/ProteoSAFe/DownloadResult?task=${task_id}&view=view_result_list' --data-raw 'option=delimit&content=all&download=&entries=&query=' -o mzTab.zip
     unzip mzTab.zip -d extracted_files
-    find extracted_files/ -type f -name "*.mzTab" -exec get_psm.py {} \\;
+    find extracted_files/ -type f -name "*.mzTab" -exec bash -c 'get_psm.py "\$0" "\$1"' {} ${task_id} \\;
     if ! find extracted_files -type f -name "*.mzTab" | grep -q .; then
         exit 186
     fi

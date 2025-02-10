@@ -14,6 +14,8 @@ chmod +x bin/get_tasks.py
 chmod +x bin/parse.py
 chmod +x bin/failed_tasks.py
 
+mkdir ${VSC_DATA}/results
+
 export TOWER_ACCESS_TOKEN=eyJ0aWQiOiAxMDgxOX0uMGVkMzY4YWVjYzk4OGViNGY3MzQ2MmQ4YjIxMjMxNDM2MDgzNjY2Ng==
 export TOWER_WORKSPACE_ID=248391247643063
 
@@ -25,4 +27,5 @@ nextflow run main.nf \
     --work_dir ${VSC_SCRATCH}/work \
     --clusterOptions "-t 24:00:00 -c 1" \
     --max_processes 10 \
-    -with-tower
+    -with-tower \
+    -with-trace ${VSC_DATA}/results/trace.tsv

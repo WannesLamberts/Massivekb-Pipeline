@@ -14,6 +14,8 @@ chmod +x bin/get_tasks.py
 chmod +x bin/parse.py
 chmod +x bin/failed_tasks.py
 
+mkdir ${VSC_DATA}/results
+
 nextflow run main.nf \
     -entry run_tasks \
     -c config_files/supercomputer.config \
@@ -21,4 +23,5 @@ nextflow run main.nf \
     --out_dir ${VSC_DATA}/results \
     --work_dir ${VSC_SCRATCH}/work \
     --max_processes 10 \
-    --clusterOptions "-t 24:00:00 -c 1"
+    --clusterOptions "-t 24:00:00 -c 1" \
+    -with-trace ${VSC_DATA}/results/trace.tsv
