@@ -2,8 +2,8 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH -A ap_adrem_wb_thesis2425
-#SBATCH --time=160:00:00
-#SBATCH --partition=skylake
+#SBATCH --time=24:00:00
+#SBATCH --partition=zen2
 
 module purge
 module load calcua/2024a
