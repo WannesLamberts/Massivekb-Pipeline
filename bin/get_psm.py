@@ -24,7 +24,7 @@ def main():
     #Convert to dataframe
     df = mz.spectrum_match_table[['spectra_ref', 'sequence']]
     #Drop duplicates sometimes multiple
-    df = df.drop_duplicates(subset='sequence', keep='first').reset_index(drop=True)
+    df = df.drop_duplicates(subset=['sequence','spectra_ref'], keep='first').reset_index(drop=True)
 
     #split the spectra reference into two columns for example ms_run[1]:scan=23396 ->ms_run = ms_run[1], scan=23396
     df[['ms_run', 'scan']] = df['spectra_ref'].str.split(':', expand=True)
