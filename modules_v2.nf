@@ -1,6 +1,9 @@
 
 process DOWNLOAD_GET_TASKS {
     label 'low_cpu'
+    if (params.publish_tasks='True') {
+        publishDir params.out_dir, mode: 'move', flatten: true,include: 'tasks.tsv'
+    }
     input:
     val link
 
@@ -21,7 +24,6 @@ process DOWNLOAD_GET_TASKS {
 
 process GET_TASKS_FROM_FILE {
     publishDir params.out_dir, mode: 'move', flatten: true,include: 'tasks.tsv'
-
     label 'low_cpu'
     input:
     path file
@@ -30,7 +32,6 @@ process GET_TASKS_FROM_FILE {
     path "tasks.tsv"
 
     script:
-    println(file)
     """
     get_tasks.py $file tasks.tsv
     if [ ${params.testing} = false ]; then
