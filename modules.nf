@@ -7,9 +7,8 @@ process DOWNLOAD_GET_TASKS {
       If the param publish_tasks is set to 'True' the tasks.tsv file will be put in the out_dir folder.
     */
     label 'low_cpu'
-    if (params.publish_tasks='True') {
-        publishDir params.out_dir, mode: 'move', flatten: true,include: 'tasks.tsv'
-    }
+    publishDir params.out_dir, mode: 'move', flatten: true,include: 'tasks.tsv'
+
     input:
     val link
 
