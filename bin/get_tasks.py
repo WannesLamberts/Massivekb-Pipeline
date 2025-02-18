@@ -5,7 +5,7 @@ import pandas as pd
 
 def get_tasks(input_file,output_file):
     """
-    Gets all the unique tasks of the dataframe in input_file. And outputs these in a .tsv file
+    Gets all the unique tasks of the massivekb metadatafile located in input_file and outputs these in a .tsv file
 
     Parameters:
     -----------
@@ -14,8 +14,6 @@ def get_tasks(input_file,output_file):
 
     output_file : string
         The name of the output file.
-
-
 
     """
     df = pd.read_csv(input_file, sep='\t', usecols=["proteosafe_task"])

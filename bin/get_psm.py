@@ -31,13 +31,13 @@ def replace_ms_run(ms_run, mapping):
 
 def get_psm(file_path,task_id='0'):
     """
-    This function collects all the psm's from an mzTab file.
+    This function extracts all the PSMs (Peptide Spectrum Matches) from an mzTab file.
 
-    The output of this funtion wil be a file psms.tsv
-    For each row in the mzTab file the columns ['sequence','scan','filename','task_id'] will be created.
+    The output will be a file named psms.tsv. For each row in the mzTab file,
+    the following columns will be generated: sequence, scan, filename, and task_id.
 
-    The function also outputs ms_run_files.tsv which holds all the ftp links for downloading the required
-    mzML and mzXML files in the mzTab files which will be used later in the parse.py script to add extra information to the psm's
+    Additionally, the function produces an ms_run_files.tsv file, which contains the FTP links for downloading the mzML and mzXML files referenced in the mzTab file.
+    These files will be used later in the parse.py script to enrich the PSM data with additional information.
 
     Parameters:
     -----------

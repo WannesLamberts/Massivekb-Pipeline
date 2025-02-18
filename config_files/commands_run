@@ -3,18 +3,18 @@
 
 #---GET_TASKS_FROM_FILE----
 #Takes the massivekb tsv file and extracts all the unique tasks
-nextflow run main.nf -c config_files/docker.config -entry get_tasks_from_file --input_file ../massivekb_dataset/base_data/LIBRARY_CREATION_AUGMENT_LIBRARY_TEST-82c0124b-candidate_library_spectra-main.tsv -with-docker
+nextflow run main.nf -c config_files/local.config -entry get_tasks_from_file --input_file ../massivekb_dataset/base_data/LIBRARY_CREATION_AUGMENT_LIBRARY_TEST-82c0124b-candidate_library_spectra-main.tsv -with-docker
 
 #--run_tasks--
 runs the selected tasks in the input file
-nextflow run main.nf -c config_files/docker.config -entry run_tasks --input_file input_files/one_tasks.tsv -with-docker
+nextflow run main.nf -c config_files/local.config -entry run_tasks --input_file input_files/one_tasks.tsv -with-docker
 
 #--download_tasks--
 downloads big massivekb tsv and extracts tasks
-nextflow run main.nf -c config_files/docker.config -entry download_tasks -with-docker
+nextflow run main.nf -c config_files/local.config -entry download_tasks -with-docker
 
 #--download_and_run_tasks--
 downloads big massivekb tsv and extracts tasks,then runs all tasks
-nextflow run main.nf -c config_files/docker.config -entry download_and_run_tasks -with-docker
+nextflow run main.nf -c config_files/local.config -entry download_and_run_tasks -with-docker
 
 

@@ -11,10 +11,12 @@ import time
 
 def parse_mzML(file_path, data):
     """
-    This function collects the following information out if a mzML file:
-    retention time
-    It creates a row for each scan in the mzML file and puts these rows into the data vector
-    also  scan_nr and filename are added for joining later with the psms.
+    This function extracts the following information from an mzML file:
+
+    Retention time
+
+    It creates a row for each scan in the mzML file and adds these rows to the data vector.
+    Additionally, scan_nr and filename are included for later joining with the PSMs.
 
     Parameters:
     -----------
@@ -32,10 +34,12 @@ def parse_mzML(file_path, data):
 
 def parse_mzXML(file, data):
     """
-    This function collects the following information out if a mzXML file:
-    retention time
-    It creates a row for each scan in the mzXML file and puts these rows into the data vector
-    also  scan_nr and filename are added for joining later with the psms.
+    This function extracts the following information from an mzXML file:
+
+    Retention time
+
+    It creates a row for each scan in the mzXML file and adds these rows to the data vector.
+    Additionally, scan_nr and filename are included for later joining with the PSMs.
 
     Parameters:
     -----------
@@ -54,10 +58,10 @@ def parse_mzXML(file, data):
 
 def parse(psms_path,ms_run_files,output_filename):
     """
-    This function downloads all the mzML and mzXML files,
-    gets all the scans out of them and then joins them with the psms to get the complete rows
+    This function downloads all the mzML and mzXML files, extracts the scans from them,
+    and then combines the scan data with the PSMs to create complete rows.
 
-    It outputs the completed dataframe as a tsv file.
+    The function outputs the finalized dataframe as a TSV file.
 
     Parameters:
     -----------
@@ -78,7 +82,7 @@ def parse(psms_path,ms_run_files,output_filename):
             try:
                 #Get the mzML or mzXML file from massivekb
                 subprocess.run(['wget', '--retry-connrefused', '--passive-ftp', '--tries=50', url],check=True)
-                #subprocess.run(['curl', url], check=True)
+               # subprocess.run(['curl', '--retry', '50', '--retry-delay', '5', '--ftp-pasv', '--fail', '--url', url, '-O','--retry-connrefused'], check=True)
             except Exception as e:
                 sys.exit(58)
 
@@ -98,7 +102,6 @@ def parse(psms_path,ms_run_files,output_filename):
 
     #Right join the two dataframes on filename and scan to get the completed psms
     result = pd.merge(df, df_psms, how='right', on=['filename','scan'])
-    output_filename = sys.argv[3]
     result.to_csv(output_filename, sep='\t', index=False, header=False)
 
 

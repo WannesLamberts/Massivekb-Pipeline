@@ -1,126 +1,127 @@
-process DOWNLOAD_METADATA {
+
+process DOWNLOAD_GET_TASKS {
+    /*
+      This process will download the massiveKB tsv metadata file and collects the unique tasks
+      located in the proteosafe_task column.
+      The process will output a task.tsv file holding these unique tasks.
+      If the param publish_tasks is set to 'True' the tasks.tsv file will be put in the out_dir folder.
+    */
     label 'low_cpu'
+    if (params.publish_tasks='True') {
+        publishDir params.out_dir, mode: 'move', flatten: true,include: 'tasks.tsv'
+    }
     input:
     val link
 
     output:
-    path "candidate_library_spectra.zip"
+    path "tasks.tsv"
 
     script:
     """
+    # Download and unzip the metadata.
     curl -X POST "$link" -o candidate_library_spectra.zip
-    """
-}
-process EXTRACT_METADATA{
-    label 'low_cpu'
-    publishDir params.out_dir, pattern: "*.tsv"
-    input:
-    path zip
+    unzip candidate_library_spectra.zip
 
-    output:
-    path "*"
+    # Get the unique tasks and write them in tasks.tsv
+    get_tasks.py LIBRARY_CREATION_AUGMENT_LIBRARY_TEST-82c0124b-candidate_library_spectra-main.tsv tasks.tsv
 
-    script:
-    """
-    unzip $zip
-    """
-}
-process DOWNLOAD_MZTAB {
-    label 'low_cpu'
-    input:
-    val task_id
-
-    output:
-    tuple val(task_id),path("${task_id}.zip")
-
-    script:
-    """
-    curl 'https://proteomics2.ucsd.edu/ProteoSAFe/DownloadResult?task=${task_id}&view=view_result_list' --data-raw 'option=delimit&content=all&download=&entries=&query=' -o ${task_id}.zip
-    """
-}
-process EXTRACT_MZTAB{
-    label 'low_cpu'
-
-    input:
-    tuple val(task_id),path(zip)
-
-    output:
-    tuple val(task_id),path("*.mzTab")
-
-    script:
-    """
-    unzip $zip -d extracted_files
-    find extracted_files/ -type f -name "*.mzTab" -exec mv {} . \\;
-
-    # Conditionally delete if params.testing is true
+    # Delete the big metadata and zip since it is no longer needed.
     if [ ${params.testing} = false ]; then
-        rm "\$(readlink -f $zip)" $zip
-        rm -r extracted_files
+        rm -rf LIBRARY_CREATION_AUGMENT_LIBRARY_TEST-82c0124b-candidate_library_spectra-main.tsv candidate_library_spectra.zip
     fi
     """
 }
 
-
-
-process DOWNLOAD_MZML_MZXML{
+process GET_TASKS_FROM_FILE {
+    /*
+      This process will use the massiveKB metadata file to collect the unique tasklocated in the proteosafe_task column.
+      (so it doesn't download it like DOWNLOAD_GET_TASKS).
+      The process will output a task.tsv file holding these unique tasks.
+      The process will move tasks.tsv to the out_dir location
+    */
+    publishDir params.out_dir, mode: 'move', flatten: true,include: 'tasks.tsv'
     label 'low_cpu'
-    publishDir './results', mode: 'move', flatten: true,include: '*_psms.tsv'
+    input:
+    path file
+
+    output:
+    path "tasks.tsv"
+
+    script:
+    """
+    # Get the unique tasks and write them in tasks.tsv
+    get_tasks.py $file tasks.tsv
+
+    # Delete the big metadata and zip since it is no longer needed.
+    if [ ${params.testing} = false ]; then
+        rm -rf LIBRARY_CREATION_AUGMENT_LIBRARY_TEST-82c0124b-candidate_library_spectra-main.tsv candidate_library_spectra.zip
+    fi
+    """
+}
+process CREATE_PSMS{
+    /*
+    This process downloads the mzTab of a task.
+    Collects all the psms listed in the mztab file.
+    Parses the mzML and mzXML files to get more information about the psms
+    Right joins the psms and the extra information to get a TSV file {task_id}_psms.tsv
+    The columns in this tsv file are [filename,scan_nr,retention_time, sequence,task_id]
+    */
+    label 'low_cpu'
+    publishDir "${params.out_dir}/psms", mode: 'move', flatten: true,include: '*_psms.tsv'
 
     input:
-    tuple val(task_id),path(mztab)
+    val(task_id)
 
     output:
     val task_id
     path "*_psms.tsv"
+
     script:
     """
-    get_psm.py $mztab
-    wget --retry-connrefused --passive-ftp --tries=50 -i ms_run_files.tsv
-    parse.py psms.tsv ${task_id}_psms.tsv
+    #Download and unzip the mzTab file.
+    curl 'https://proteomics2.ucsd.edu/ProteoSAFe/DownloadResult?task=${task_id}&view=view_result_list' --data-raw 'option=delimit&content=all&download=&entries=&query=' -o mzTab.zip
+    unzip mzTab.zip -d extracted_files
+
+    #Gets the psms and a file containing all the links to the mzML and mzXML files for the mzTab file.
+    find extracted_files/ -type f -name "*.mzTab" -exec bash -c 'get_psm.py "\$0" "\$1"' {} ${task_id} \\;
+
+    #If no mztab file is found the process stops with exit code 186.
+    if ! find extracted_files -type f -name "*.mzTab" | grep -q .; then
+        exit 186
+    fi
+
+    #If no ms_run_files is found (meaning that something went wrong in get_psm.py) exit with code 51.
+    if ! find . -type f -name "ms_run_files.tsv" | grep -q .; then
+    exit 51
+    fi
+
+    #parse the mzML and mzXML files and use the information to create the complete psms.
+    parse.py psms.tsv ms_run_files.tsv ${task_id}_psms.tsv
+
+    #delete files that are not longer needed.
     if [ ${params.testing} = false ]; then
-        rm "\$(readlink -f $mztab)" $mztab
-        rm -rf ms_run_files.tsv *.mzXML *.mzML psms.tsv
+        rm -rf extracted_files *.mzTab mzTab.zip ms_run_files.tsv *.mzXML *.mzML psms.tsv
     fi
     """
 }
 
-process CONCATENATE{
+process COLLECT_SUCCESSFUL_TASKS {
+    /*
+     This process will collect the succesfull task_id's and puts them into a tsv file.
+    */
     label 'low_cpu'
-    publishDir './results', mode: 'copy', flatten: true,include: 'combined.tsv'
+    publishDir params.out_dir, mode: 'move', flatten: true, include: '*.tsv'
+
     input:
-    path files
+    val idList_successful
+
     output:
-    path "combined.tsv"
+    path "successful_tasks.tsv"
     script:
     """
-    first=true
-    for file in *_psms.tsv; do
-    if [ "\$first" = true ]; then
-        first=false
-        echo "columns"
-    else
-        echo ""  # Adds a newline before every file except the first one
-    fi
-    cat "\$file"
-    done > combined.tsv
+    echo -e "${idList_successful.join('\n')}" > successful_tasks.tsv
     """
 }
 
-process TO_FILE{
-    label 'low_cpu'
-    publishDir params.out_dir, mode: 'move', flatten: true,include: 'succesfull_tasks.tsv'
-
-    input:
-    val idList
-
-    output:
-    file "succesfull_tasks"
-
-    script:
-    """
-    # Here we are appending each ID to the tsv file
-    echo -e "${idList.join('\n')}" > succesfull_tasks
-    """
-}
 
 
