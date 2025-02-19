@@ -178,7 +178,7 @@ First and foremost, I would like to thank **Wout Bittrieux** and **Ceder Dens** 
 
 I am also grateful to **Wim Cuypers** for his guidance on using Nextflow, as well as for providing helpful examples and resources that were crucial in my learning of the tool.
 
-Finally, I would like to thank **Haliil Dazdos** for his support with explaining the best way to download the mzTab files which is an important part in this pipeline.
+Finally, I would like to thank **Halil Ceylan** for his support with explaining the best way to download the mzTab files which is an important part in this pipeline.
 
 Their contributions were crucial to the success of this project, and I truly appreciate their expertise and willingness to share their insights with me.
 
