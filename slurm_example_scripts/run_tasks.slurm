@@ -18,7 +18,7 @@ mkdir ${VSC_DATA}/results
 
 nextflow run main.nf \
     -entry run_tasks \
-    -c config_files/supercomputer.config \
+    -c config_files/slurm.config \
     --input_file input_files/first_100.tsv \
     --out_dir ${VSC_DATA}/results \
     --work_dir ${VSC_SCRATCH}/work \

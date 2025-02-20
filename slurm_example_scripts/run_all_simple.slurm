@@ -19,7 +19,7 @@ mkdir ${VSC_DATA}/results
 
 nextflow run main.nf \
     -entry download_and_run_tasks_simple \
-    -c config_files/supercomputer.config \
+    -c config_files/slurm.config \
     --out_dir ${VSC_DATA}/results \
     --work_dir ${VSC_SCRATCH}/work \
     --clusterOptions "-t 24:00:00 -c 1" \

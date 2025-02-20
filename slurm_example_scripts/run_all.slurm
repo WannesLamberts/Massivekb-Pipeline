@@ -18,7 +18,7 @@ mkdir ${VSC_DATA}/results
 
 nextflow run main.nf \
     -entry download_and_run_tasks \
-    -c config_files/supercomputer.config \
+    -c config_files/slurm.config \
     --out_dir ${VSC_DATA}/results \
     --work_dir ${VSC_SCRATCH}/work \
     --max_processes 10 \
