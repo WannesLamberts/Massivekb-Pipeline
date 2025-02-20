@@ -12,7 +12,6 @@ module load Nextflow/23.04.2
 chmod +x bin/get_psm.py
 chmod +x bin/get_tasks.py
 chmod +x bin/parse.py
-chmod +x bin/failed_tasks.py
 
 export TOWER_ACCESS_TOKEN=eyJ0aWQiOiAxMDgxOX0uMGVkMzY4YWVjYzk4OGViNGY3MzQ2MmQ4YjIxMjMxNDM2MDgzNjY2Ng==
 export TOWER_WORKSPACE_ID=248391247643063
