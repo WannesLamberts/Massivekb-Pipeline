@@ -9,7 +9,7 @@ include { DOWNLOAD_GET_TASKS } from './modules.nf'
 include { CREATE_PSMS } from './modules.nf'
 include { COLLECT_SUCCESSFUL_TASKS } from './modules.nf'
 include { GET_TASKS_FROM_FILE } from './modules.nf'
-
+include { CREATE_PSMS_SIMPLE} from './modules.nf'
 
 workflow run_tasks{
     /*
@@ -46,6 +46,7 @@ workflow get_tasks_from_file{
     input_file = file(params.input_file)
     tasks = GET_TASKS_FROM_FILE(input_file)
 }
+
 workflow download_tasks{
     /*
         This workflow will download the massiveKB metadata file and extract the unique tasks,
@@ -53,4 +54,24 @@ workflow download_tasks{
     */
     params.publish_tasks='True'
     tasks_file = DOWNLOAD_GET_TASKS(params.dataset_link)
+}
+
+workflow download_and_run_tasks_simple{
+    /*
+This workflow performs the same operations as download_and_run_tasks,
+    but it does not extract additional information from mzML/mzXML files.
+    */
+    tasks_file = DOWNLOAD_GET_TASKS(params.dataset_link)
+    tasks = tasks_file.splitCsv(header: false, sep: '\t').map(row -> row[0])
+    CREATE_PSMS_SIMPLE(tasks)
+    COLLECT_SUCCESSFUL_TASKS(CREATE_PSMS_SIMPLE.out[0].collect())
+}
+workflow run_tasks_simple{
+    /*
+    This workflow performs the same operations as run_tasks,
+    but it does not extract additional information from mzML/mzXML files.
+    */
+    tasks = Channel.fromPath(params.input_file).splitCsv(header: false, sep: '\t').map(row -> row[0])
+    CREATE_PSMS_SIMPLE(tasks)
+    COLLECT_SUCCESSFUL_TASKS(CREATE_PSMS_SIMPLE.out[0].collect())
 }

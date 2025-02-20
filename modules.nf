@@ -63,7 +63,51 @@ process CREATE_PSMS{
     Collects all the psms listed in the mztab file.
     Parses the mzML and mzXML files to get more information about the psms
     Right joins the psms and the extra information to get a TSV file {task_id}_psms.tsv
-    The columns in this tsv file are [filename,scan_nr,retention_time, sequence,task_id]
+    The columns in this tsv file are ['dataset', 'filename', 'scan', 'sequence', 'charge', 'mz','RT']
+    */
+    label 'low_cpu'
+    publishDir "${params.out_dir}/psms", mode: 'move', flatten: true,include: '*_psms_complete.tsv'
+
+    input:
+    val(task_id)
+
+    output:
+    val task_id
+    path "*_psms_complete.tsv"
+
+    script:
+    """
+    #Download and unzip the mzTab file.
+    curl 'https://proteomics2.ucsd.edu/ProteoSAFe/DownloadResult?task=${task_id}&view=view_result_list' --data-raw 'option=delimit&content=all&download=&entries=&query=' -o mzTab.zip
+    unzip mzTab.zip -d extracted_files
+
+    #Gets the psms and a file containing all the links to the mzML and mzXML files for the mzTab file.
+    find extracted_files/ -type f -name "*.mzTab" -exec bash -c 'get_psm.py "\$0" "\$1" True' {} ${task_id} \\;
+
+    #If no mztab file is found the process stops with exit code 186.
+    if ! find extracted_files -type f -name "*.mzTab" | grep -q .; then
+        exit 186
+    fi
+
+    #If no ms_run_files is found (meaning that something went wrong in get_psm.py) exit with code 51.
+    if ! find . -type f -name "ms_run_files.tsv" | grep -q .; then
+    exit 51
+    fi
+
+    #parse the mzML and mzXML files and use the information to create the complete psms.
+    parse.py ${task_id}_psms.tsv ms_run_files.tsv ${task_id}_psms_complete.tsv
+
+    #delete files that are not longer needed.
+    if [ ${params.testing} = false ]; then
+        rm -rf extracted_files *.mzTab mzTab.zip ms_run_files.tsv *.mzXML *.mzML ${task_id}_psms.tsv
+    fi
+    """
+}
+process CREATE_PSMS_SIMPLE{
+    /*
+    This process downloads the mzTab of a task.
+    Collects all the psms listed in the mztab file and information.
+    The columns in this tsv file are ['dataset', 'filename', 'scan', 'sequence', 'charge', 'mz']
     */
     label 'low_cpu'
     publishDir "${params.out_dir}/psms", mode: 'move', flatten: true,include: '*_psms.tsv'
@@ -82,28 +126,24 @@ process CREATE_PSMS{
     unzip mzTab.zip -d extracted_files
 
     #Gets the psms and a file containing all the links to the mzML and mzXML files for the mzTab file.
-    find extracted_files/ -type f -name "*.mzTab" -exec bash -c 'get_psm.py "\$0" "\$1"' {} ${task_id} \\;
+    find extracted_files/ -type f -name "*.mzTab" -exec bash -c 'get_psm.py "\$0" "\$1" False' {} ${task_id} \\;
 
     #If no mztab file is found the process stops with exit code 186.
     if ! find extracted_files -type f -name "*.mzTab" | grep -q .; then
         exit 186
     fi
 
-    #If no ms_run_files is found (meaning that something went wrong in get_psm.py) exit with code 51.
-    if ! find . -type f -name "ms_run_files.tsv" | grep -q .; then
+    #If no psms.tsv file is found (meaning that something went wrong in get_psm.py) exit with code 51.
+    if ! find . -type f -name "${task_id}_psms.tsv" | grep -q .; then
     exit 51
     fi
 
-    #parse the mzML and mzXML files and use the information to create the complete psms.
-    parse.py psms.tsv ms_run_files.tsv ${task_id}_psms.tsv
-
     #delete files that are not longer needed.
     if [ ${params.testing} = false ]; then
-        rm -rf extracted_files *.mzTab mzTab.zip ms_run_files.tsv *.mzXML *.mzML psms.tsv
+        rm -rf extracted_files *.mzTab mzTab.zip
     fi
     """
 }
-
 process COLLECT_SUCCESSFUL_TASKS {
     /*
      This process will collect the succesfull task_id's and puts them into a tsv file.

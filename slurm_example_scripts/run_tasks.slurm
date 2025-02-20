@@ -16,16 +16,12 @@ chmod +x bin/failed_tasks.py
 
 mkdir ${VSC_DATA}/results
 
-export TOWER_ACCESS_TOKEN=eyJ0aWQiOiAxMDgxOX0uMGVkMzY4YWVjYzk4OGViNGY3MzQ2MmQ4YjIxMjMxNDM2MDgzNjY2Ng==
-export TOWER_WORKSPACE_ID=248391247643063
-
 nextflow run main.nf \
     -entry run_tasks \
     -c config_files/supercomputer.config \
-    --input_tasks input_files/first_100.tsv \
+    --input_file input_files/first_100.tsv \
     --out_dir ${VSC_DATA}/results \
     --work_dir ${VSC_SCRATCH}/work \
-    --clusterOptions "-t 24:00:00 -c 1" \
     --max_processes 10 \
-    -with-tower \
+    --clusterOptions "-t 24:00:00 -c 1" \
     -with-trace ${VSC_DATA}/results/trace.tsv

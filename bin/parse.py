@@ -75,14 +75,13 @@ def parse(psms_path,ms_run_files,output_filename):
         The name of the output file.
     """
     data = []
-
     with open(ms_run_files, "r") as file:
         for line in file:
             url = line.strip()
             try:
                 #Get the mzML or mzXML file from massivekb
-                subprocess.run(['wget', '--retry-connrefused', '--passive-ftp', '--tries=50', url],check=True)
-               # subprocess.run(['curl', '--retry', '50', '--retry-delay', '5', '--ftp-pasv', '--fail', '--url', url, '-O','--retry-connrefused'], check=True)
+                #subprocess.run(['wget', '--retry-connrefused', '--passive-ftp', '--tries=50', url],check=True)
+                subprocess.run(['curl', '--retry', '50', '--retry-delay', '5', '--ftp-pasv', '--fail', '--url', url, '-O','--retry-connrefused'], check=True)
             except Exception as e:
                 sys.exit(58)
 
@@ -102,6 +101,7 @@ def parse(psms_path,ms_run_files,output_filename):
 
     #Right join the two dataframes on filename and scan to get the completed psms
     result = pd.merge(df, df_psms, how='right', on=['filename','scan'])
+    result=result[['dataset', 'filename', 'scan', 'sequence', 'charge', 'mz','RT']]
     result.to_csv(output_filename, sep='\t', index=False, header=False)
 
 
