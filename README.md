@@ -68,17 +68,26 @@ Here are two main workflows for running the pipeline:
 
 	This workflow allows greater control over task selection and execution volume.
 
+Additionally, two workflow variants have been implemented for when the extra information from mzML/mzXML files arent needed. These variants collect data solely from the mzTab file, skipping the mzML/mzXML files. As a result, these workflows are considerably faster while still providing charge and mz values in the rows.
+
+
 ### Example run Download workflow
-Here is an example of how to simply run this workflow
    ```bash
   nextflow run main.nf -c config_files/local.config -entry download_and_run_tasks -with-docker
    ```
 ### Example run Run from Tasks workflow
-Here is an example of how to simply run this workflow.
   ```bash
  nextflow run main.nf -c config_files/local.config -entry run_tasks --input_file input_files/first_100.tsv -with-docker
    ```
    You can change the input file as you like containing the tasks you want to run.
+### Example run Download simple workflow
+   ```bash
+  nextflow run main.nf -c config_files/local.config -entry download_and_run_tasks_simple -with-docker
+   ```
+### Example run Run from Tasks simple workflow
+  ```bash
+ nextflow run main.nf -c config_files/local.config -entry run_tasks_simple --input_file input_files/first_100.tsv -with-docker
+   ```
    
 ### Configuration options
 
@@ -114,12 +123,14 @@ The pipeline can also be executed using a Slurm executor, which creates Slurm ta
 
 Other than this, the execution remains the same as described in [Usage locally](##Usage\ locally), with one key difference: the `cpu_tasks` and `memory` parameters are removed, and the `clusterOptions` parameter is introduced. The `clusterOptions` parameter is used to define Slurm-specific settings for processes. For example, using `--clusterOptions "-t 24:00:00 -c 1"` sets the number of CPUs per process to 1 and applies a time limit of 24 hours per process.
 
-Examples of Slurm-based runs can be found in the main directory:
+Examples of Slurm-based runs can be found in the `slurm_example_scripts` directory:
 
 -  `run_all.slurm` – A complete run from start to output.
--  `run_basic.slurm` – A run that takes as input the first 100 tasks
--  `run_with_tower.slurm` – An example of a run with seqera.
+-  `run_tasks.slurm` – A run that takes as input the first 100 tasks
+-  `run_all_simple.slurm` – A complete simple run
+-  `run_tasks_simple.slurm` – A simple run that takes as input the first 100 tasks
 
+All these examples also have an example with _with_tower behind the name, this is an example where seqera is used to generate an interface.
    
   ## Output
 The output is stored by default in the `results` folder. Inside this folder, there is a `psms` directory containing TSV files for each task, where each file holds the PSMs. The columns in these files do not have headers to facilitate easy concatenation. The column order is: `filename`, `scan_nr`, `retention_time`, `sequence`, and `task_id`.
@@ -169,6 +180,7 @@ massivekb_pipeline/
 │   ├── all_tasks.tsv           # All unique tasks in the metadata
 │   ├── first_100.tsv           # First 100 unique tasks
 │   ├── one_task.tsv            # Single task example
+├── Slurm_example_scripts/      # Directory containing example slurm task scripts
 ```  
 
 ## Acknowledgement
@@ -178,7 +190,7 @@ First and foremost, I would like to thank **Wout Bittrieux** and **Ceder Dens** 
 
 I am also grateful to **Wim Cuypers** for his guidance on using Nextflow, as well as for providing helpful examples and resources that were crucial in my learning of the tool.
 
-Finally, I would like to thank **Halil Ceylan** for his support with explaining the best way to download the mzTab files which is an important part in this pipeline.
+Finally, I would like to thank **Haliil Dazdos** for his support with explaining the best way to download the mzTab files which is an important part in this pipeline.
 
 Their contributions were crucial to the success of this project, and I truly appreciate their expertise and willingness to share their insights with me.
 
