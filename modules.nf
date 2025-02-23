@@ -164,7 +164,7 @@ process COLLECT_SUCCESSFUL_TASKS {
 
 
 process CONCATENATEFILES {
-    publishDir './results', mode: 'move'
+    publishDir params.out_dir, mode: 'move', flatten: true, include: '*.parquet'
 
     input:
     path input_files  // input_files should be a list of the TSV files generated earlier
