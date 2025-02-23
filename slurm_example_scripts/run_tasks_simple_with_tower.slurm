@@ -21,7 +21,7 @@ export TOWER_WORKSPACE_ID=248391247643063
 nextflow run main.nf \
     -entry run_tasks_simple \
     -c config_files/slurm.config \
-    --input_file input_files/first_100.tsv \
+    --input input_files/first_100.tsv \
     --out_dir ${VSC_DATA}/results \
     --work_dir ${VSC_SCRATCH}/work \
     --clusterOptions "-t 24:00:00 -c 1" \
