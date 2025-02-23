@@ -175,7 +175,10 @@ process CONCATENATEFILES {
     script:
     """
     echo -e "${cols.join('\\t')}" > merged.tsv
-    cat ${input_files.join(' ')} >> merged.tsv
+    for file in ${input_files}; do
+        cat "\$file" >> merged.tsv
+        echo "" >> merged.tsv  # Ensuring a newline after each file
+    done
     to_parquet.py merged.tsv
     rm merged.tsv
     """

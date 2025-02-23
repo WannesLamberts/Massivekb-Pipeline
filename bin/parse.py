@@ -101,7 +101,7 @@ def parse(psms_path,ms_run_files,output_filename):
 
     #Right join the two dataframes on filename and scan to get the completed psms
     result = pd.merge(df, df_psms, how='right', on=['filename','scan'])
-    result=result[['dataset', 'filename', 'scan', 'sequence', 'charge', 'mz','RT']]
+    result=result[['task_id','dataset', 'filename', 'scan', 'sequence', 'charge', 'mz','RT']]
     result.to_csv(output_filename, sep='\t', index=False, header=False)
 
 

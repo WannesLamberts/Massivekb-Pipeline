@@ -72,7 +72,7 @@ def get_psm(file_path,task_id='0',create_ms_run_files=True):
 
     #output the psms dataframe
     df = df.rename(columns={'opt_global_Precursor': 'mz'})
-    df[['dataset', 'filename', 'scan', 'sequence', 'charge', 'mz']].to_csv(task_id+'_psms.tsv', sep='\t', index=False,
+    df[['task_id','dataset', 'filename', 'scan', 'sequence', 'charge', 'mz']].to_csv(task_id+'_psms.tsv', sep='\t', index=False,
                                                                            header=create_ms_run_files)
     #Output ms run files needed for peptides matches
     if create_ms_run_files:

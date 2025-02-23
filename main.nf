@@ -82,11 +82,11 @@ workflow run_tasks_simple{
 
 workflow concatenate_simple{
     files = file(params.input+'/*.tsv')
-    cols = ['dataset', 'filename', 'scan_nr', 'sequence', 'charge', 'mz']
+    cols = ['task_id','dataset', 'filename', 'scan_nr', 'sequence', 'charge', 'mz']
     CONCATENATEFILES(files,cols)
 }
 workflow concatenate{
     files = file(params.input+'/*.tsv')
-    cols = ['dataset', 'filename', 'scan_nr', 'sequence', 'charge', 'mz','retention_time']
+    cols = ['task_id','dataset', 'filename', 'scan_nr', 'sequence', 'charge', 'mz','retention_time']
     CONCATENATEFILES(files,cols)
 }
