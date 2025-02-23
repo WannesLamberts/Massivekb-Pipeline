@@ -41,5 +41,5 @@ nextflow run main.nf \
     --work_dir ${VSC_SCRATCH}/work2 \
     --clusterOptions "-t 24:00:00 -c 1 --mem-per-cpu=16000m" \
     --max_processes 1 \
-    --input ${VSC_DATA}/results/psms \
+    --input ${VSC_SCRATCH/results/psms \
     -with-tower
