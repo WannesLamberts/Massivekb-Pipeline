@@ -21,7 +21,7 @@ export TOWER_WORKSPACE_ID=248391247643063
 
 
 nextflow run main.nf \
-    -entry -entry concatenate_simple \
+    -entry concatenate_simple \
     -c config_files/slurm.config \
     --out_dir ${VSC_DATA}/results \
     --work_dir ${VSC_SCRATCH}/work2 \
