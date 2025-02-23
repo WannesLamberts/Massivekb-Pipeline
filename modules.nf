@@ -163,4 +163,20 @@ process COLLECT_SUCCESSFUL_TASKS {
 }
 
 
+process CONCATENATEFILES {
+    publishDir './results', mode: 'move'
 
+    input:
+    path input_files  // input_files should be a list of the TSV files generated earlier
+    val cols
+    output:
+    path 'dataset.parquet'  // This will be the concatenated output
+
+    script:
+    """
+    echo -e "${cols.join('\\t')}" > merged.tsv
+    cat ${input_files.join(' ')} >> merged.tsv
+    to_parquet.py merged.tsv
+    rm merged.tsv
+    """
+}
