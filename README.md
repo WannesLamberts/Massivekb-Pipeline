@@ -80,7 +80,7 @@ Additionally, two workflow variants have been implemented for when the extra inf
  ```
  ### Example run Run from Tasks workflow  
  ```bash  
- nextflow run main.nf -c config_files/local.config -entry run_tasks --input_file input_files/first_100.tsv -with-docker  
+ nextflow run main.nf -c config_files/local.config -entry run_tasks --input input_files/first_100.tsv -with-docker  
  ```  
  You can change the input file as you like containing the tasks you want to run.  
 
@@ -90,7 +90,7 @@ Several configuration parameters can be used to customize the pipeline execution
   
 bash  
  ```bash  
- nextflow run main.nf -c config_files/local.config -entry run_tasks --input_file tasks.tsv --out_dir out -with-docker  
+ nextflow run main.nf -c config_files/local.config -entry run_tasks --input tasks.tsv --out_dir out -with-docker  
  ```
  Alternatively, you can modify these parameters directly in the `config_files/local.config` file.  
   
@@ -98,7 +98,7 @@ bash
   
 -   **dataset_link**: The link to download the massivekb metadata. Defaults to the original link.  
 -   **out_dir**: Directory where results are saved. Default is `results`.  
--   **input_file**: Path to the input file containing tasks to execute.  
+-   **input**: Path to input if a workflow requires input.  
 -   **cpu_tasks**: Maximum CPUs a process can use. Default is 1.  
 -   **memory**: Maximum memory a process can use. Default is 4GB.  
 -   **max_processes**: Maximum number of processes that can run in parallel. Default is 10.  
@@ -159,18 +159,18 @@ The mztab file itself contains charge and m/z values, so if only these two are n
 nextflow run main.nf -c config_files/local.config -entry download_and_run_tasks_simple -with-docker  
 ```
 ```bash  
- nextflow run main.nf -c config_files/local.config -entry run_tasks_simple --input_file input_files/first_100.tsv -with-docker  
+ nextflow run main.nf -c config_files/local.config -entry run_tasks_simple --input input_files/first_100.tsv -with-docker  
  ```  
 
 ### Concatenate
 This workflows take a directory as input and will concatenate all the files in it into a dataset.parquet file.
  For the regular workflow run:
 ```bash
- nextflow run main.nf -entry concatenate -c config_files/local.config --max_processes 1 --input <psms_directory> --memory 16.GB
+nextflow run main.nf -entry concatenate -c config_files/local.config --max_processes 1 --input results/psms --memory 5.GB -with-docker
 ```
 For the simple workflow run:
 ```bash
- nextflow run main.nf -entry concatenate_simple -c config_files/local.config --max_processes 1 --input <psms_directory> --memory 16.GB
+nextflow run main.nf -entry concatenate_simple -c config_files/local.config --max_processes 1 --input results/psms --memory 5.GB -with-docker
 ```
 
 

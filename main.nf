@@ -11,6 +11,7 @@ include { COLLECT_SUCCESSFUL_TASKS } from './modules.nf'
 include { GET_TASKS_FROM_FILE } from './modules.nf'
 include { CREATE_PSMS_SIMPLE} from './modules.nf'
 include { CONCATENATEFILES} from './modules.nf'
+include { CALIBRATE} from './modules.nf'
 
 workflow run_tasks{
     /*
@@ -68,7 +69,6 @@ This workflow performs the same operations as download_and_run_tasks,
     tasks = tasks_file.splitCsv(header: false, sep: '\t').map(row -> row[0])
     CREATE_PSMS_SIMPLE(tasks)
     COLLECT_SUCCESSFUL_TASKS(CREATE_PSMS_SIMPLE.out[0].collect())
-
 }
 workflow run_tasks_simple{
     /*
@@ -87,6 +87,12 @@ workflow concatenate_simple{
 }
 workflow concatenate{
     files = file(params.input+'/*.tsv')
-    cols = ['task_id','dataset', 'filename', 'scan_nr', 'sequence', 'charge', 'mz','retention_time']
+    cols = ['task_id','dataset', 'filename', 'scan_nr', 'sequence', 'charge', 'mz','RT']
     CONCATENATEFILES(files,cols)
+}
+
+workflow calibrate{
+    files = Channel.fromPath(params.input+'/*.tsv')
+    chronologer = file(params.chronologer)
+    CALIBRATE(files,chronologer)
 }

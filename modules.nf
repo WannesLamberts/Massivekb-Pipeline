@@ -183,3 +183,18 @@ process CONCATENATEFILES {
     rm merged.tsv
     """
 }
+
+process CALIBRATE {
+    publishDir "${params.out_dir}/psms_calibrated", mode: 'move', flatten: true, include: '*calibrated.tsv'
+
+    input:
+    path input_file
+    path chronologer
+    output:
+    path '*calibrated.tsv'
+
+    script:
+    """
+    calibrate.py ${input_file} ${chronologer}
+    """
+}
