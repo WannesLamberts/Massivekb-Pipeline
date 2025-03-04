@@ -163,7 +163,12 @@ process COLLECT_SUCCESSFUL_TASKS {
 }
 
 
-process CONCATENATEFILES {
+process TO_PARQUET {
+    /*
+    This process combines all TSV files in the specified directory into a single merged.tsv file, adding the provided column names as headers.
+    Next, it converts merged.tsv into dataset.parquet.
+    Finally, the merged.tsv file is deleted to optimize storage.
+    */
     publishDir params.out_dir, mode: 'move', flatten: true, include: '*.parquet'
 
     input:
@@ -184,7 +189,36 @@ process CONCATENATEFILES {
     """
 }
 
+process MERGE {
+    /*
+    This process merges all the tsv files of the given directory into big merged.tsv file
+    It will also put the column names provided at the top of the file.
+    */
+    publishDir params.out_dir, mode: 'move', flatten: true, include: 'merged.tsv'
+
+    input:
+    path input_files
+    val cols
+    output:
+    path 'merged.tsv'
+
+    script:
+    """
+    echo -e "${cols.join('\\t')}" > merged.tsv
+    for file in ${input_files}; do
+        cat "\$file" >> merged.tsv
+        echo "" >> merged.tsv  # Ensuring a newline after each file
+    done
+    """
+}
+
+
 process CALIBRATE {
+    /*
+    This process calibrates the retention times for all PSM files in the specified directory.
+    It uses the Chronologer dataset as a reference point
+    and applies linear regression to predict retention times.
+     */
     publishDir "${params.out_dir}/psms_calibrated", mode: 'move', flatten: true, include: '*calibrated.tsv'
 
     input:
