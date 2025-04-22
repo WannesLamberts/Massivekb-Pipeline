@@ -80,11 +80,10 @@ def parse(psms_path,ms_run_files,output_filename):
             url = line.strip()
             try:
                 #Get the mzML or mzXML file from massivekb
-                #subprocess.run(['wget', '--retry-connrefused', '--passive-ftp', '--tries=50', url],check=True)
-                subprocess.run(['curl', '--retry', '50', '--retry-delay', '5', '--ftp-pasv', '--fail', '--url', url, '-O','--retry-connrefused'], check=True)
+                subprocess.run(['wget', '--retry-connrefused', '--passive-ftp', '--tries=50', url],check=True)
+                #subprocess.run(['curl', '--retry', '50', '--retry-delay', '5', '--ftp-pasv', '--fail', '--url', url, '-O','--retry-connrefused'], check=True)
             except Exception as e:
                 sys.exit(58)
-
             filename = os.path.basename(url)
             #If it is a mzML file parse it with parse_mzML
             if filename.endswith(".mzML"):
