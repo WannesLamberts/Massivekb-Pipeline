@@ -1,4 +1,4 @@
-#!/bin/bash
+&#!/bin/bash
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH -A ap_adrem_wb_thesis2425
@@ -20,24 +20,11 @@ export TOWER_ACCESS_TOKEN=eyJ0aWQiOiAxMDgxOX0uMGVkMzY4YWVjYzk4OGViNGY3MzQ2MmQ4Yj
 export TOWER_WORKSPACE_ID=248391247643063
 
 nextflow run main.nf \
-    -entry download_and_run_tasks_simple \
+    -entry concatenate\
     -c config_files/slurm.config \
     --out_dir ${VSC_DATA}/results \
     --work_dir ${VSC_SCRATCH}/work \
-    --clusterOptions "-t 24:00:00 -c 1" \
-    --max_processes 60 \
-    -with-tower \
-    -with-trace ${VSC_DATA}/results/trace.tsv
-
-mv ${VSC_DATA}/results/psms ${VSC_SCRATCH}
-
-
-nextflow run main.nf \
-    -entry concatenate_simple \
-    -c config_files/slurm.config \
-    --out_dir ${VSC_DATA}/results \
-    --work_dir ${VSC_SCRATCH}/work2 \
-    --clusterOptions "-t 24:00:00 -c 1 --mem-per-cpu=16000m" \
+    --clusterOptions "-t 24:00:00 -c 1 --mem-per-cpu=32000m" \
     --max_processes 1 \
     --input ${VSC_SCRATCH}/psms \
     -with-tower
