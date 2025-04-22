@@ -22,10 +22,10 @@ nextflow run main.nf \
     -c config_files/slurm.config \
      -entry calibrate\
      --input ${VSC_SCRATCH}/psms\
-     --chronologer ${VSC_SCRATCH}/Massivekb-Pipeline/Chronologer.tsv\
+     --chronologer ${VSC_SCRATCH}/Massivekb-pipeline/Chronologer.tsv \
      --out_dir ${VSC_DATA}/results \
     --work_dir ${VSC_SCRATCH}/work \
-     --max_processes 86 \
-    --clusterOptions "-t 24:00:00 -c 1 --mem-per-cpu=11000m" \
+     --max_processes 50 \
+    --clusterOptions "-t 24:00:00 -c 1 --mem-per-cpu=7680m" \
      -with-tower \
      -with-apptainer
