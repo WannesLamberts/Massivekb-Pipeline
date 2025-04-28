@@ -78,7 +78,7 @@ process CREATE_PSMS{
     script:
     """
     #Download and unzip the mzTab file.
-    curl 'https://proteomics2.ucsd.edu/ProteoSAFe/DownloadResult?task=${task_id}&view=view_result_list' --data-raw 'option=delimit&content=all&download=&entries=&query=' -o mzTab.zip
+    curl -k 'https://proteomics2.ucsd.edu/ProteoSAFe/DownloadResult?task=${task_id}&view=view_result_list' --data-raw 'option=delimit&content=all&download=&entries=&query=' -o mzTab.zip
     unzip mzTab.zip -d extracted_files
 
     #Gets the psms and a file containing all the links to the mzML and mzXML files for the mzTab file.

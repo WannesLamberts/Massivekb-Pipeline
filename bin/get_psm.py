@@ -77,7 +77,7 @@ def get_psm(file_path,task_id='0',create_ms_run_files=True):
     #Output ms run files needed for peptides matches
     if create_ms_run_files:
         ms_run_files = pd.Series(ms_run_to_file)
-        ms_run_files=ms_run_files.str.replace('file://', 'ftp://massive.ucsd.edu/z01/')
+        ms_run_files=ms_run_files.str.replace('file://', 'ftp://massive-ftp.ucsd.edu/z01/')
         ms_run_files.to_csv('ms_run_files.tsv', sep='\t', index=False, header=False)
 
 
