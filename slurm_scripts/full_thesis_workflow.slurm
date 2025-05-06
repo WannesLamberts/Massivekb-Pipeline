@@ -49,6 +49,6 @@ nextflow run main.nf \
     --work_dir ${VSC_SCRATCH}/work \
     --clusterOptions "-t 24:00:00 -c 1 --mem-per-cpu=32000m" \
     --max_processes 1 \
-    --input ${VSC_SCRATCH}/results/psms_calibrated \
+    --input ${VSC_DATA}/results/psms_calibrated \
     --columns "filename,task_id,dataset,scan_nr,sequence,charge,mz,RT,iRT"\
     -with-tower
