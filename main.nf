@@ -92,16 +92,7 @@ workflow to_parquet{
     TO_PARQUET(files,cols)
 
 }
-workflow merge{
-    /*
-    This workflow merges all the tsv files of the given directory into big merged.tsv file
-    It will also put the column names provided at the top of the file.
-    */
-    files = file(params.input+'/*.tsv')
-    cols  = params.columns.tokenize(',')
-    MERGE(files,cols)
 
-}
 workflow calibrate{
     /*
     This process calibrates the retention times for all PSM files in the specified directory.
