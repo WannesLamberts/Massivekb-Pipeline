@@ -13,6 +13,7 @@ chmod +x bin/get_psm.py
 chmod +x bin/get_tasks.py
 chmod +x bin/parse.py
 chmod +x bin/to_parquet.py
+chmod +x bin/calibrate.py
 
 mkdir ${VSC_DATA}/results
 
@@ -22,13 +23,13 @@ export TOWER_WORKSPACE_ID=248391247643063
 nextflow run main.nf \
     -entry run_tasks \
     -c config_files/slurm.config \
-    --input wannes_scripts/second_200.tsv \
+    --input input_files/first_200.tsv \
     --out_dir ${VSC_DATA}/results \
     --work_dir ${VSC_SCRATCH}/work \
     --clusterOptions "-t 24:00:00 -c 1" \
     --max_processes 10 \
     -with-tower \
-    -with-trace ${VSC_DATA}/results/trace.tsv
+    -with-trace ${VSC_DATA}/results/trace_tasks.tsv
 
 nextflow run main.nf \
     -c config_files/slurm.config \
@@ -40,7 +41,8 @@ nextflow run main.nf \
      --max_processes 50 \
     --clusterOptions "-t 24:00:00 -c 1 --mem-per-cpu=7680m" \
      -with-tower \
-     -with-apptainer
+     -with-apptainer\
+     -with-trace ${VSC_DATA}/results/trace_cal.tsv
 
 nextflow run main.nf \
     -entry to_parquet\
@@ -52,3 +54,4 @@ nextflow run main.nf \
     --input ${VSC_DATA}/results/psms_calibrated \
     --columns "filename,task_id,dataset,scan_nr,sequence,charge,mz,RT,iRT"\
     -with-tower
+    -with-trace ${VSC_DATA}/results/trace_parquet.tsv
